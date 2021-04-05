@@ -6,14 +6,14 @@
       <div class="row">
         <div class="col-lg-9">
           
-          <div class="card mt-4">
+          <div class="card mt-4" >
             <div class="card-body">
               <h3 class="card-title" style = "text-transform:uppercase;">{{ this.$route.params.nome }}</h3><!-- Titulo do card - Nome do pokémon trago pela URL por forma de parametro (this.$route.params.nome)-->
             </div>
-            <div v-b-hover="handleHover" class="border rounded py-3 px-4"> <!-- Definindo as principais imagens no card / Hover - para quando passar o mouse trocar de imagem -->
+            <div v-b-hover="handleHover" class="border rounded py-3 px-4" :bind="carregaImagem()"> <!-- Definindo as principais imagens no card / Hover - para quando passar o mouse trocar de imagem -->
                  <!-- Utilizando sempre o $this.router.params para definir parâmetros que serão usados para trazer as imagens e afins --> 
-                <img v-if="isHovered" class="card-img-top img-fluid slide" :src="require('../../assets/images/pokemons/img'+ this.$route.params.nome +'second.jpg')" :alt='this.$route.params.nome'>
-                <img v-else class="card-img-top img-fluid slide" :src="require('../../assets/images/pokemons/img'+ this.$route.params.nome +'.jpg')" :alt='this.$route.params.nome'>
+                <img v-if="isHovered" class="card-img-top img-fluid slide" :src="this.imgBack" :alt='this.$route.params.nome'>
+                <img v-else class="card-img-top img-fluid slide" :src="this.imgFront" :alt='this.$route.params.nome'>
             </div>
             <div style="text-align: center;"> <!-- Definindo as imagens da galeria que são trazidas por meio de URL e passando como parâmetro para definir a imagem o 'this.$route.params.nome' -->
               <p>Galeria</p>
@@ -69,29 +69,21 @@ export default {
           infoDimensions: [],
           infoType: [],
           //Variável para definir o "aparecimento" das imagens principais
-          isHovered: false
+          isHovered: false,
+          //Variáveis para definir o caminho das imagens
+          imgFront: '',
+          imgBack: ''
         }
     },
     mounted(){
-      //Busca o pokemon [forms]
       pokeapi //Utilizando o objeto do serviço
-      .get("/pokemon/" + this.$route.params.nome)//passando como parâmetro this.$route.params na URI para ser chamada na API
-      .then((response) => (this.info = response.data.forms)); //Retorna os dados da API de acordo com o response declarado
-
-      //Busca Habilidade [Abilities]
-      pokeapi//Utilizando o objeto do serviço
-       .get("/pokemon/" + this.$route.params.nome)//passando como parâmetro this.$route.params na URI para ser chamada na API
-      .then((response) => (this.infoAbility = response.data.abilities));//Retorna os dados da API de acordo com o response declarado
-
-      //Busca Dimensões do Pokémon [versions]
-      pokeapi//Utilizando o objeto do serviço
-       .get("/pokemon/" + this.$route.params.nome)//passando como parâmetro this.$route.params na URI para ser chamada na API
-      .then((response) => (this.infoDimensions = response.data));//Retorna os dados da API de acordo com o response declarado
-
-      //Busca o tipo do pokemon [type]
-      pokeapi//Utilizando o objeto do serviço
-       .get("/pokemon/" + this.$route.params.nome)//passando como parâmetro this.$route.params na URI para ser chamada na API
-      .then((response) => (this.infoType = response.data.types));//Retorna os dados da API de acordo com o response declarado
+      .get("/pokemon/" + this.$route.params.nome) //passando como parâmetro this.$route.params na URI para ser chamada na API
+      .then((response => {
+        this.info           = response.data.forms;     //Busca o pokemon            [forms]
+        this.infoAbility    = response.data.abilities; //Busca Habilidade           [Abilities]
+        this.infoDimensions = response.data;           //Busca Dimensões do Pokémon [versions]
+        this.infoType       = response.data.types;     //Busca o tipo do pokemon    [type]
+      }));
     },
     methods: {
       handleHover(hovered) { //Método para definir a visibilidade das imagens do card
@@ -99,6 +91,17 @@ export default {
       },
       voltar() { //Método para voltar à página anterior
         this.$router.back();
+      },
+      carregaImagem(){ //Método para carregar as imagens do card
+        try { //caso o pokemon possua imagem, trás a imagem referente a ele
+          console.log('Chamando a função!');
+          this.imgFront = require('../../assets/images/pokemons/img'+ this.$route.params.nome +'.jpg');
+          this.imgBack = require('../../assets/images/pokemons/img'+ this.$route.params.nome +'second.jpg');
+        } 
+        catch { //Caso contrário trás duas fotos padrões
+          this.imgFront = require('../../assets/images/pokemon-logo.jpg');
+          this.imgBack = require('../../assets/images/pokemon-slide-4.jpg');
+        }   
       }
     }
 }

@@ -39,17 +39,11 @@
         }
     },
     mounted() {
-        console.log('asdasdasdas');
         //Busca todos os tipos
         this.$forceUpdate();
         pokeapi //Utilizando o objeto do serviço
         .get("/type/"+this.$route.params.filter) //passando como parâmetro a URI para ser chamada na API
         .then((response) => (this.listAllTypes = response.data.pokemon)) //Retorna os dados da API de acordo com o response declarado
-    },
-    methods: {
-        refresh(){
-            
-        }
     }
    })
 </script>

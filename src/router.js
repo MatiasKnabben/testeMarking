@@ -18,7 +18,7 @@ export default new VueRouter({
   routes: [ //Definição de todas as Rotas de páginas da aplicação
     { path: '/filtro/:filter' , component: FiltroTipo   },
     { path: '/pokemon/:nome'  , component: PokePage     },
-    { path: '/listall'        , component: ListAll      },
+    { path: '/listall/'       , component: ListAll      },
     { path: '/'               , component: Home         },
     { path: '*'               , component: PageNotFound } //Rota de escape, para quando uma URL não for identificada mostra a pagina de NotFound.
   ]

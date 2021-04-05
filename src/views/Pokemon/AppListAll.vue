@@ -46,6 +46,7 @@ export default ({
         return{
             //variável para armazenar o retorno da API
             listAll: [],
+            listAllTypes: [],
             //váriavel para armazenar o nome do campo de pesquisa
             search: ''
         }
@@ -55,7 +56,7 @@ export default ({
         pokeapi //Utilizando o objeto do serviço
         .get("/pokemon/") //passando como parâmetro a URI para ser chamada na API
         .then((response) => (this.listAll = response.data.results)); //Retorna os dados da API de acordo com o response declarado
-    }   
+    }
 })
 </script>
 

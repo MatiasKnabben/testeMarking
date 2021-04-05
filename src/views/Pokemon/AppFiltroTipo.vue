@@ -9,10 +9,10 @@
                 <h1>Todos os Pokémons</h1>
                     <h6>Filtro: {{ this.$route.params.filter }}</h6> <!-- Recebendo o valor do parametro que foi passado pela URL do router -->
                         <ul>
-                            <div v-for="filter in listAllTypes" :key="filter.id">
-                                <router-link :to="`/pokemon/${filter.pokemon.name}`">
+                            <div v-for="filtered in listAllTypes" :key="filtered.id">
+                                <router-link :to="`/pokemon/${filtered.pokemon.name}`">
                                     <li>
-                                        <p style="text-transform:uppercase;">Pokémon - {{ filter.pokemon.name }} </p>
+                                        <p style="text-transform:uppercase;">Pokémon - {{ filtered.pokemon.name }} </p>
                                     </li>
                                 </router-link>
                             </div>
@@ -35,16 +35,23 @@
         return{
             //Váriavel para armazenar o retorno da API
             listAllTypes: [],
-            name: 'alow'
+            filter: this.$route.params.filter
         }
     },
-    mounted() {
-        //Busca todos os tipos
-        this.$forceUpdate();
-        pokeapi //Utilizando o objeto do serviço
-        .get("/type/"+this.$route.params.filter) //passando como parâmetro a URI para ser chamada na API
-        .then((response) => (this.listAllTypes = response.data.pokemon)) //Retorna os dados da API de acordo com o response declarado
-    }
+    watch: {
+        '$route'(to) { //Filtrando as alterações do parametro da rota. Para atualizar os dados filtrados 
+            this.filter = to.params.filter
+
+            pokeapi 
+            .get("/type/"+to.params.filter)
+            .then((response) => (this.listAllTypes = response.data.pokemon))
+        }
+    },
+    mounted(){
+        pokeapi 
+        .get("/type/"+this.filter)
+        .then((response) => (this.listAllTypes = response.data.pokemon))
+    },
    })
 </script>
 
